@@ -15,10 +15,26 @@
         key: "{{ lookup('file', '~/.ssh/ansible_ed25519.pub') }}"
         exclusive: true
         state: present
+
+    - name: Add SSH key for tj user
+      ansible.posix.authorized_key:
+        user: tj
+        key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+        exclusive: true
+        state: present
     
     - name: Give ansible user passwordless sudo
       ansible.builtin.copy:
         dest: /etc/sudoers.d/ansible
+        content: "ansible ALL=(ALL) NOPASSWD:ALL\n"
+        owner: root
+        group: root
+        mode: "0440"
+        validate: visudo -cf %s
+
+    - name: Give tj user passwordless sudo
+      ansible.builtin.copy:
+        dest: /etc/sudoers.d/tj
         content: "ansible ALL=(ALL) NOPASSWD:ALL\n"
         owner: root
         group: root
