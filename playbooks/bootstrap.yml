@@ -1,0 +1,26 @@
+- name: Bootstrap servers
+  hosts: all
+  become: true
+  tasks:
+    - name: Create ansible user
+      ansible.builtin.user:
+        name: ansible
+        shell: /bin/bash
+        create_home: true
+        state: present
+    
+    - name: Add SSH key for ansible user
+      ansible.posix.authorized_key:
+        user: ansible
+        key: "{{ lookup('file', '~/.ssh/ansible_ed25519.pub') }}"
+        exclusive: true
+        state: present
+    
+    - name: Give ansible user passwordless sudo
+      ansible.builtin.copy:
+        dest: /etc/sudoers.d/ansible
+        content: "ansible ALL=(ALL) NOPASSWD:ALL\n"
+        owner: root
+        group: root
+        mode: "0440"
+        validate: visudo -cf %s
