@@ -1,0 +1,7 @@
+- name: Install base packages
+  ansible.builtin.apt:
+    pkg: "{{ common_packages }}"
+
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ common_timezone }}"
