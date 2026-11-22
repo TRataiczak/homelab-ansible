@@ -35,7 +35,7 @@
     - name: Give tj user passwordless sudo
       ansible.builtin.copy:
         dest: /etc/sudoers.d/tj
-        content: "ansible ALL=(ALL) NOPASSWD:ALL\n"
+        content: "tj ALL=(ALL) NOPASSWD:ALL\n"
         owner: root
         group: root
         mode: "0440"
