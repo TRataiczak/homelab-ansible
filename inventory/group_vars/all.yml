@@ -1,0 +1,2 @@
+homelab_domain: home.rataiczak.com
+acme_email: "{{ vault_acme_email }}"

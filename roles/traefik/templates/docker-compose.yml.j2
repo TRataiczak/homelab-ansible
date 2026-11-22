@@ -1,0 +1,46 @@
+services:
+  traefik:
+    image: "{{ traefik_image }}"
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file: .env
+    command:
+      # Dashboard
+      - --api.dashboard=true
+      # Find containers through Docker, but only ones that opt in
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=proxy
+      # HTTP on 80, redirected to HTTPS on 443
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.websecure.address=:443
+      # One wildcard certificate for everything
+      - --entrypoints.websecure.http.tls.certresolver=cloudflare
+      - --entrypoints.websecure.http.tls.domains[0].main={{ homelab_domain }}
+      - --entrypoints.websecure.http.tls.domains[0].sans=*.{{ homelab_domain }}
+      # Let's Encrypt via Cloudflare DNS
+      - --certificatesresolvers.cloudflare.acme.email={{ acme_email }}
+      - --certificatesresolvers.cloudflare.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1:53,1.0.0.1:53
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dashboard.rule=Host(`traefik.{{ homelab_domain }}`)
+      - traefik.http.routers.dashboard.entrypoints=websecure
+      - traefik.http.routers.dashboard.service=api@internal
+
+networks:
+  proxy:
+    external: true

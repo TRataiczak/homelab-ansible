@@ -1,0 +1,3 @@
+traefik_image: "traefik:v3"
+
+traefik_dir: /opt/traefik
