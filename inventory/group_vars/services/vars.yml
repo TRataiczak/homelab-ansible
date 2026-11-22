@@ -7,3 +7,5 @@ docker_users:
 
 docker_networks:
   - proxy
+
+traefik_cloudflare_api_token: "{{ vault_cloudflare_api_token }}"
