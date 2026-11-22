@@ -1,0 +1,2 @@
+actual_image: "actualbudget/actual-server:latest"
+actual_dir: /opt/actual

@@ -1,0 +1,20 @@
+services:
+  actual:
+    image: "{{ actual_image }}"
+    container_name: actual
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+    volumes:
+      - ./data:/data
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.actual.rule=Host(`actual.{{ homelab_domain }}`)
+      - traefik.http.routers.actual.entrypoints=websecure
+      - traefik.http.services.actual.loadbalancer.server.port=5006
+
+networks:
+  proxy:
+    external: true
