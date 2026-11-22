@@ -3,3 +3,9 @@
   become: true
   roles:
     - role: common
+
+- name: Services servers
+  hosts: services
+  become: true
+  roles:
+    - docker
