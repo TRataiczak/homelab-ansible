@@ -1,7 +1,33 @@
 - name: Install base packages
   ansible.builtin.apt:
     pkg: "{{ common_packages }}"
+    update_cache: yes
 
 - name: Set timezone
   community.general.timezone:
     name: "{{ common_timezone }}"
+
+- name: Set device hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Install unattended-upgrades
+  ansible.builtin.apt:
+    name: unattended-upgrades
+    state: present
+
+- name: Turn on automatic daily updates
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Make sure unattended-upgrades is running
+  ansible.builtin.service:
+    name: unattended-upgrades
+    state: started
+    enabled: true
