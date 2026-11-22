@@ -1,7 +1,7 @@
 - name: Install base packages
   ansible.builtin.apt:
     pkg: "{{ common_packages }}"
-    update_cache: yes
+    update_cache: true
 
 - name: Set timezone
   community.general.timezone:
