@@ -1,2 +1,13 @@
 homelab_domain: home.rataiczak.com
+
 acme_email: "{{ vault_acme_email }}"
+
+common_firewall_ports:
+  - "80"
+  - "443"
+
+docker_users:
+  - tj
+
+docker_networks:
+  - proxy

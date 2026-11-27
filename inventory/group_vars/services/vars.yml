@@ -1,13 +1,3 @@
-common_firewall_ports:
-  - "80"
-  - "443"
-
-docker_users:
-  - tj
-
-docker_networks:
-  - proxy
-
 traefik_cloudflare_api_token: "{{ vault_cloudflare_api_token }}"
 
 traefik_dashboard_users: "{{ vault_traefik_dashboard_users }}"

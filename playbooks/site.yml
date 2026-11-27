@@ -4,11 +4,16 @@
   roles:
     - role: common
 
+- name: Docker install
+  hosts: services:monitoring
+  become: true
+  roles:
+    - docker
+
 - name: Services servers
   hosts: services
   become: true
   roles:
-    - docker
     - traefik
     - portainer
     - actual
